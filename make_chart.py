@@ -12,11 +12,11 @@ from utilities import make_filename
 #     return f"{month}_temperatures.csv"
 
 
-temp_filename = make_filename()
+# temp_filename = make_filename()
 parser = argparse.ArgumentParser(description="make a chart from a csv file")
 parser.add_argument('filename',
-                    # default=make_filename(),
-                    default=temp_filename,
+                    default=make_filename(),
+                    # default=temp_filename,
                     nargs='?',
                     help='(Optional) Name of file from which to make a chart')
 
@@ -26,6 +26,10 @@ def make_chart(filename):
         df = pd.read_csv(f, parse_dates=True, index_col='datetime')
         df.plot(marker='+')
 
+        plt.ylabel("Temp in C")
+        plt.xlabel("datetime")
+        plt.title(f"{filename}")
+        plt.grid(color='blue', linestyle='--')
         plt.show()
 
 
