@@ -3,17 +3,19 @@
 import argparse
 import pandas as pd
 from matplotlib import pyplot as plt
+from utilities import make_filename
 
 
-def make_filename():
-    from datetime import date
-    month = date.today().strftime('%B')
-    return f"{month}_temperatures.csv"
+# def make_filename():
+#     from datetime import date
+#     month = date.today().strftime('%b_%Y')
+#     return f"{month}_temperatures.csv"
 
 
 temp_filename = make_filename()
 parser = argparse.ArgumentParser(description="make a chart from a csv file")
 parser.add_argument('filename',
+                    # default=make_filename(),
                     default=temp_filename,
                     nargs='?',
                     help='(Optional) Name of file from which to make a chart')

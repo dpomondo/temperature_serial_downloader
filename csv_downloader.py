@@ -3,6 +3,7 @@
 import time
 import serial
 import csv
+from utilities import make_filename
 
 
 def return_list():
@@ -21,7 +22,7 @@ def return_list():
             print(f"serial port sent:\t{line}")
             if 'CSV' in line or 'START' in line:
                 break
-            if index >= 500:
+            if index >= 15:
                 print("Never received a `CSV START` message")
                 break
 
@@ -38,8 +39,8 @@ def return_list():
             if index >= 600:
                 print("hit max replies(600)")
                 break
-            if 'END' in line:
-                print("serial port sent 'END' command")
+            if "END" in line:
+                print("serial port sent `END` command")
                 break
 
     return results
@@ -57,15 +58,16 @@ def process_results(csv_raw_list):
     return processed_results
 
 
-def make_filename():
-    from datetime import date
-    month = date.today().strftime('%B')
-    return f"{month}_temperatures.csv"
+# def make_filename():
+#     from datetime import date
+#     month = date.today().strftime('%b_%Y')
+#     return f"{month}_temperatures.csv"
 
 
 def write_results(csv_processed_list):
     times = []
     filename = make_filename()
+    print(f"Writing results to {filename}")
     # with open('temperatures.csv', 'r') as t:
     try:
         with open(filename, 'r') as t:
