@@ -27,6 +27,8 @@ def make_chart(filename):
     with open(filename, 'r') as f:
         df = pd.read_csv(f, parse_dates=True, index_col='datetime')
         days = df.groupby(lambda ts: ts.dayofyear)
+        days_min = df.groupby(lambda ts: ts.dayofyear).min()
+        days_max = df.groupby(lambda ts: ts.dayofyear).max()
         # df_hist = df.hist(column=" temp1")
 
         # fig, axs = plt.subplots(2)
@@ -36,7 +38,9 @@ def make_chart(filename):
             axs["A"].plot(grp.index, grp, marker='+')
             grp.index -= grp.index.floor('D')
             axs["B"].plot(grp.index, grp)
-            axs["C"].hist(df, bins=20)
+            # axs["C"].hist(df, bins=20)
+        axs["C"].plot(days_min)
+        axs["C"].plot(days_max)
 
         fig.suptitle(f"{filename}")
         # plt.ylabel("Temp in C")
@@ -46,8 +50,9 @@ def make_chart(filename):
         axs["B"].set_title("Day-on-Day Comparison")
         axs["B"].set_ylabel("Temp in C")
         axs["B"].set_xlabel("hour")
-        axs["C"].set_ylabel("Occurances")
-        axs["C"].set_xlabel("Temp")
+        axs["C"].set_ylabel("Temp in C")
+        axs["C"].set_xlabel("Day of Year")
+        axs["C"].legend(["Min", "Max"], loc="best")
         # plt.title(f"{filename}")
         axs["A"].grid(color='blue', linestyle='--')
         axs["B"].grid(color='blue', linestyle='--')
