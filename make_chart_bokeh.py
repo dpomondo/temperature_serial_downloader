@@ -2,7 +2,9 @@
 
 import argparse
 import pandas as pd
-from matplotlib import pyplot as plt
+from bokeh.plotting import figure, show
+from bokeh.layouts import gridplot, row
+# from matplotlib import pyplot as plt
 from utilities import make_filename
 
 
@@ -29,39 +31,26 @@ def make_chart(filename):
         days = df.groupby(lambda ts: ts.dayofyear)
         days_min = df.groupby(lambda ts: ts.dayofyear).min()
         days_max = df.groupby(lambda ts: ts.dayofyear).max()
+        days_median = df.groupby(lambda ts: ts.dayofyear).median()
         # df_hist = df.hist(column=" temp1")
 
-        # fig, axs = plt.subplots(2)
-        fig, axs = plt.subplot_mosaic("AA;BC")
-        # ax1 = fig.add_subplot()
+        # temp = figure(title="Daily Temps", sizing_mode="stretch_width")
+        temp = figure(title="Daily Temps")
+        days_ch = figure(title="Day-on-Day")
+        min_max = figure(title="Mid, Max, Median")
+
         for doy, grp in days:
-            axs["A"].plot(grp.index, grp)
+            temp.line(grp.index, grp)
             grp.index -= grp.index.floor('D')
-            axs["B"].plot(grp.index, grp)
-            # axs["C"].hist(df, bins=20)
-        axs["C"].plot(days_min)
-        axs["C"].plot(days_max)
-        axs["C"].plot(df.groupby(lambda ts: ts.dayofyear).median())
+            days_ch.line(grp.index, grp)
+        min_max.line(days_min.index, days_min)
+        min_max.line(days_max.index, days_max)
+        min_max.line(days_median.index, days_median)
 
-        fig.suptitle(f"{filename}")
-        # plt.ylabel("Temp in C")
-        # plt.xlabel("datetime")
-        axs["A"].set_ylabel("Temp in C")
-        axs["A"].set_xlabel("datetime")
-        axs["A"].grid(color='blue', linestyle='--')
-
-        axs["B"].set_title("Day-on-Day Comparison")
-        axs["B"].set_ylabel("Temp in C")
-        axs["B"].set_xlabel("hour")
-        axs["B"].grid(color='blue', linestyle='--')
-        # axs["B"].axis(xmin=0, xmax=24)
-
-        axs["C"].set_ylabel("Temp in C")
-        axs["C"].set_xlabel("Day of Year")
-        axs["C"].legend(["Min", "Max", "Median"], loc="best")
-        axs["C"].grid(color='lightseagreen', linestyle='-')
-        # plt.show()
-        return fig, axs
+        grid = gridplot([[temp], [days_ch, min_max]],
+                        sizing_mode="stretch_width")
+        # grid = row(days_ch, min_max)
+        return grid
 
 
 if __name__ == '__main__':
@@ -69,8 +58,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     try:
-        chart, _ = make_chart(args.filename)
-        chart.show()
-        quit = input("")
+        chart = make_chart(args.filename)
+        # chart.show()
+        show(chart)
     except FileNotFoundError:
         print("Bad filename supplied")
