@@ -42,7 +42,6 @@ def return_list():
             if "END" in line:
                 print("serial port sent `END` command")
                 break
-
     return results
 
 
@@ -76,6 +75,9 @@ def write_results(csv_processed_list):
                 times.append(row['datetime'])
     except FileNotFoundError:
         print(f"File not found, creating file {filename}")
+        with open(filename, 'a') as t:
+            writer = csv.writer(t, delimiter=',')
+            writer.writerow(["datetime", " temp1"])
     # with open('temperatures.csv', 'a') as t:
     with open(filename, 'a') as t:
         writer = csv.writer(t, delimiter=',')
