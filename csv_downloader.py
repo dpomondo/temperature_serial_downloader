@@ -3,12 +3,25 @@
 import time
 import serial
 import csv
+import argparse
 from utilities import make_filename
 
 
-def return_list():
-    with serial.Serial('/dev/ttyACM0', 115200, timeout=2) as ser:
-        print("Dialogue open with serial port!\n")
+serial_target = ['/dev/ttyACM0', '/dev/ttyUSB0']
+parser = argparse.ArgumentParser(
+    description="download csv data over serial port")
+parser.add_argument('port',
+                    choices=serial_target,
+                    default=serial_target[0],
+                    # default=temp_filename,
+                    nargs='?',
+                    help='(Optional) Serial Port with which to talk')
+
+
+def return_list(serial_port):
+
+    with serial.Serial(serial_port, 115200, timeout=2) as ser:
+        print(f"Dialogue open with {serial_port}\n")
         # ser.open()
         ser.write(b'x')
         time.sleep(1)
@@ -90,8 +103,12 @@ def write_results(csv_processed_list):
 
 
 if __name__ == "__main__":
-    csv_list = return_list()
-    csv_list_better = process_results(csv_list)
-    write_results(csv_list_better)
+    args = parser.parse_args()
+    try:
+        csv_list = return_list(args.port)
+        csv_list_better = process_results(csv_list)
+        write_results(csv_list_better)
+    except Exception as e:
+        print(f"Error:\n\t{e}\nbad serial port provided maybe?!?")
     # for row in csv_list_better:
     #     print(row, len(row))

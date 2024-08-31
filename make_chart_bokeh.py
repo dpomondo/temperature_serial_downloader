@@ -66,7 +66,7 @@ def make_chart(filename):
                            tooltips=[("day", "$index"), ("temp", "@y")],
                            x_axis_type="datetime",
                            )
-        min_max_chrt = figure(title="Mid, Max, Median",
+        min_max_chrt = figure(title="Min, Max, Median",
                               y_range=(y_axis_min, y_axis_max),
                               toolbar_location=None,
                               )
