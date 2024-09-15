@@ -1,5 +1,10 @@
-# temperature_serial_downloader
+### temperature_serial_downloader
 
-Literally just a few hacked-up scripts to help dowlnload temperature data from some Raspberry Pi Picos and Wemos D1 minis.
+Just a few hacked-up scripts to help dowlnload temperature data from some Raspberry Pi Picos and Wemos D1 minis, perhaps over wifi, perhaps over UART.
 
-This is intended as a personal learning project -- any attempt to use these yourself will likely burn down your house.
+#### TODO
+- ###### Move CSV files to new home, instead of living in top level folder.
+    - `python path.lib` maybe?!?
+- ###### Break up CSV files into indivudual days instead of months
+    - `Pandas` can do this, but `awk` might be interesting too.
+- ###### give `make_chart.py` and variants the ability to chart arbitrary numbers of days
