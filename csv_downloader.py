@@ -7,7 +7,8 @@ import argparse
 from utilities import make_filename
 
 
-serial_target = ['/dev/ttyACM0', '/dev/ttyUSB0']
+data_dir = "data"
+serial_target = ['/dev/ttyACM0', '/dev/ttyUSB0', '/dev/ttyUSB1']
 parser = argparse.ArgumentParser(
     description="download csv data over serial port")
 parser.add_argument('port',
@@ -78,7 +79,7 @@ def process_results(csv_raw_list):
 
 def write_results(csv_processed_list):
     times = []
-    filename = make_filename()
+    filename = data_dir + "/" + make_filename()
     print(f"Writing results to {filename}")
     # with open('temperatures.csv', 'r') as t:
     try:
@@ -92,6 +93,7 @@ def write_results(csv_processed_list):
             writer = csv.writer(t, delimiter=',')
             writer.writerow(["datetime", " temp1"])
     # with open('temperatures.csv', 'a') as t:
+    newlin, oldlin = 0, 0
     with open(filename, 'a') as t:
         writer = csv.writer(t, delimiter=',')
         for row in csv_processed_list:
@@ -99,7 +101,11 @@ def write_results(csv_processed_list):
             # temp = str(row[2])
             temp = row[1]
             if timestamp not in times:
+                newlin += 1
                 writer.writerow([timestamp, temp])
+            else:
+                oldlin += 1
+    print(f"Processed {newlin} new and {oldlin} old lines")
 
 
 if __name__ == "__main__":
