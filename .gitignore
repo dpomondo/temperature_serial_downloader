@@ -1,0 +1,10 @@
+# csv_downloader.py
+data/
+.git/
+# .gitignore
+# make_chart_bokeh.py
+# make_chart.py
+__pycache__/
+# README.md
+# utilities.py
+.venv/

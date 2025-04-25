@@ -39,6 +39,7 @@ def return_list(serial_port):
             if index >= 15:
                 print("Never received a `CSV START` message")
                 break
+                # should this raise an error? it just falls through, negating the whole point
 
         ser.write(b'c')
         print("Trying to get CSV data!")
@@ -93,10 +94,11 @@ def write_results(csv_processed_list):
             writer = csv.writer(t, delimiter=',')
             writer.writerow(["datetime", " temp1"])
     # with open('temperatures.csv', 'a') as t:
-    newlin, oldlin = 0, 0
+    total_lines, newlin, oldlin = 0, 0, 0
     with open(filename, 'a') as t:
         writer = csv.writer(t, delimiter=',')
         for row in csv_processed_list:
+            total_lines += 1
             timestamp = row[0]
             # temp = str(row[2])
             temp = row[1]
@@ -105,7 +107,7 @@ def write_results(csv_processed_list):
                 writer.writerow([timestamp, temp])
             else:
                 oldlin += 1
-    print(f"Processed {newlin} new and {oldlin} old lines")
+    print(f"Processed {total_lines} total lines, with {newlin} new and {oldlin} old lines")
 
 
 if __name__ == "__main__":
