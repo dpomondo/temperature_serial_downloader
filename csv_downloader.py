@@ -39,9 +39,12 @@ def return_list(serial_port):
             if index >= 15:
                 print("Never received a `CSV START` message")
                 break
-                # should this raise an error? it just falls through, negating the whole point
+                # should this raise an error? it just falls through, negating 
+                # the whole point
 
-        ser.write(b'c')
+        # ser.write(b'c')
+        # changed pico program, this should be the new way to trigger printing
+        ser.write(b'p')
         print("Trying to get CSV data!")
         index = 0
         results = []
@@ -107,7 +110,8 @@ def write_results(csv_processed_list):
                 writer.writerow([timestamp, temp])
             else:
                 oldlin += 1
-    print(f"Processed {total_lines} total lines, with {newlin} new and {oldlin} old lines")
+    print(
+        f"Processed {total_lines} total lines, with {newlin} new and {oldlin} old lines")
 
 
 if __name__ == "__main__":
