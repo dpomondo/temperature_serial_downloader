@@ -17,10 +17,13 @@ parser.add_argument('port',
                     # default=temp_filename,
                     nargs='?',
                     help='(Optional) Serial Port with which to talk')
+parser.add_argument('-o', '--output',
+                    default=make_filename(data_dir),
+                    nargs='?',
+                    help='(Optional) File Destination')
 
 
 def return_list(serial_port):
-
     with serial.Serial(serial_port, 115200, timeout=2) as ser:
         print(f"Dialogue open with {serial_port}\n")
         # ser.open()
@@ -81,24 +84,25 @@ def process_results(csv_raw_list):
 #     return f"{month}_temperatures.csv"
 
 
-def write_results(csv_processed_list):
+def write_results(csv_processed_list, output_file):
     times = []
-    filename = data_dir + "/" + make_filename()
-    print(f"Writing results to {filename}")
+    # filename = data_dir + "/" + make_filename()
+    # filename = make_filename(data_dir=data_dir)
+    print(f"Writing results to {output_file}")
     # with open('temperatures.csv', 'r') as t:
     try:
-        with open(filename, 'r') as t:
+        with open(output_file, 'r') as t:
             reader = csv.DictReader(t)
             for row in reader:
                 times.append(row['datetime'])
     except FileNotFoundError:
-        print(f"File not found, creating file {filename}")
-        with open(filename, 'a') as t:
+        print(f"File not found, creating file {output_file}")
+        with open(output_file, 'a') as t:
             writer = csv.writer(t, delimiter=',')
             writer.writerow(["datetime", " temp1"])
     # with open('temperatures.csv', 'a') as t:
     total_lines, newlin, oldlin = 0, 0, 0
-    with open(filename, 'a') as t:
+    with open(output_file, 'a') as t:
         writer = csv.writer(t, delimiter=',')
         for row in csv_processed_list:
             total_lines += 1
@@ -119,7 +123,7 @@ if __name__ == "__main__":
     try:
         csv_list = return_list(args.port)
         csv_list_better = process_results(csv_list)
-        write_results(csv_list_better)
+        write_results(csv_list_better, args.output)
     except Exception as e:
         print(f"Error:\n\t{e}\nbad serial port provided maybe?!?")
     # for row in csv_list_better:
